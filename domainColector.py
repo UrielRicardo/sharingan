@@ -11,13 +11,15 @@ from bs4 import BeautifulSoup
 import json
 import pika
 
+
 credentials = pika.PlainCredentials('user', 'pass')
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', credentials))
 
 def tryAgain(retries=0):
     if retries > 3: return
     try:
-		channel = connection.channel()
+        channel = connection.channel()
+        
         def callback(ch, method, properties, body):
             url = str(body)
         
@@ -62,7 +64,6 @@ def tryAgain(retries=0):
         
         channel.start_consuming()
         channel.basic_qos(prefetch_count=1)
-		
     except:
         retries+=1
         tryAgain(retries)
